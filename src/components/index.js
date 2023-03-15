@@ -1,2 +1,2 @@
-export  * from "./AppBar"
-export  *  from "./UpcomingGameCard"
+export * from "./AppBar"
+export * from "./UpcomingGameCard"

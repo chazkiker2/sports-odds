@@ -1,2 +1,2 @@
-export * from "./UpcomingGames";
+export * from "./UpcomingGames"
 export * from "./MatchupComparison"

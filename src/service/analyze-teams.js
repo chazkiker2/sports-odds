@@ -4,13 +4,18 @@ var teamNames1 = require("../../data/team-name-1")
 var teamNames2 = require("../../data/team-name-2")
 var odds = require("../data/odds.json")
 
-
-// const teamNames = Object.keys(teams).sort()
-// fs.writeFile(`data/team-names-sorted.json`, JSON.stringify(teamNames), "utf8", x => {})
-
-const teamNames = odds.map(x=> [x.home_team, x.away_team]).reduce((a, b) => a.concat(b), [])
+const teamNames = Object.keys(teams)
 teamNames.sort()
-fs.writeFile(`data/team-names-odds-sorted.json`, JSON.stringify(teamNames), "utf8", x => {})
+fs.writeFile(
+    `data/team-names-sorted.json`,
+    JSON.stringify(teamNames),
+    "utf8",
+    (x) => {}
+)
+
+// const teamNames = odds.map(x=> [x.home_team, x.away_team]).reduce((a, b) => a.concat(b), [])
+// teamNames.sort()
+// fs.writeFile(`data/team-names-odds-sorted.json`, JSON.stringify(teamNames), "utf8", x => {})
 
 // const uniqueTo1 = teamNames1.filter(x => !teamNames2.includes(x)).sort()
 // const uniqueTo2 = teamNames2.filter(x => !teamNames1.includes(x)).sort()

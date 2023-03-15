@@ -4,6 +4,7 @@ data/
 notes.md
 src/sheets.pem
 .env
+env.js
 
 # dependencies
 /node_modules
