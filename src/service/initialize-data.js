@@ -5,9 +5,12 @@ var utils  = require("./util.js");
 
 // TODO: split these values into .env
 
-var documentId = '<GET_FROM_ENV>';
-var serviceEmail = '<GET_FROM_ENV>';
-var serviceKey = fs.readFileSync('<GET_FROM_ENV>').toString();
+
+const documentId = '<GET_FROM_ENV>';
+const serviceEmail = '<GET_FROM_ENV>';
+const pathToServiceKey='<GET_FROM_ENV>';
+
+const serviceKey = fs.readFileSync(pathToServiceKey).toString();
 
 const sheets = new Sheets({ email: serviceEmail, key: serviceKey });
 const colMap = {

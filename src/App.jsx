@@ -10,8 +10,30 @@ import {
   } from "grommet";
 import { Moon, Sun } from "grommet-icons";
 import { deepMerge } from "grommet/utils";
-import { AppBar, CardTemplate, MatchupCard, MatchupStats } from "./components";
-import odds from "./data/odds.json"
+import { AppBar } from "./components";
+import { UpcomingGames, MatchupComparison, } from "./pages";
+
+import {
+    createBrowserRouter,
+    RouterProvider,
+  } from "react-router-dom";
+
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <UpcomingGames />,
+    },
+{
+    path: "/matchup",
+    element: <MatchupComparison />,
+},
+{
+    path: "/matchup/:homeTeamName/:awayTeamName",
+    element: <MatchupComparison />,
+}
+  ]);
+
+
 
  const theme = deepMerge(grommet, {
     global: {
@@ -38,32 +60,20 @@ function App() {
 
 
   return (
-
     <Grommet theme={theme} full themeMode={dark ? "dark" : "light"}>
-<Page>
-    <AppBar>
-      <Text size="large">My App</Text>
-               <Button
-           a11yTitle={dark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-           icon={dark ? <Moon /> : <Sun />}
-           onClick={() => setDark(!dark)}
-         />
-    </AppBar>
-  <PageContent>
-    <Grid columns="large" gap="large" pad={{ bottom: "large" }}>
-        <MatchupStats/>
-    </Grid>
-    <Grid columns="medium" gap="large" pad={{ bottom: "large" }}>
-
-        {odds.map(matchup =><MatchupCard odds={matchup} />)}
-
-    <CardTemplate title={"Card 1"} />
-    <CardTemplate title={"Card 2"} />
-    <CardTemplate title={"Card 3"} />
-    </Grid>
-
-  </PageContent>
-</Page>
+        <Page>
+            <AppBar>
+            <Text size="large">My App</Text>
+                    <Button
+                a11yTitle={dark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                icon={dark ? <Moon /> : <Sun />}
+                onClick={() => setDark(!dark)}
+                />
+            </AppBar>
+            <PageContent>
+                <RouterProvider router={router} />
+            </PageContent>
+        </Page>
     </Grommet>
   );
 }

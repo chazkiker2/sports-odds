@@ -1,3 +1,4 @@
+
 import React from "react";
 import {
     Table,
@@ -10,20 +11,27 @@ import {
     CardBody,
     Heading,
     ResponsiveContext,
+    Grid,
 } from "grommet";
 import teamData from "../data/all-teams.json"
+import {
+    useParams
+  } from "react-router-dom";
 
-export const MatchupStats = () => {
+
+export function MatchupComparison() {
+    let {homeTeamName, awayTeamName} = useParams();
+    console.log(homeTeamName, awayTeamName)
+
     const size = React.useContext(ResponsiveContext);
-    const homeTeamName = "Texas A&M-CC";
-    const awayTeamName = "Southeast Missouri State";
+    console.log(homeTeamName)
+    console.log(awayTeamName)
+    homeTeamName ??= "Texas A&M-CC";
+    awayTeamName ??= "Southeast Missouri State";
     const awayTeam = teamData[awayTeamName]
     const homeTeam = teamData[homeTeamName];
-
-    return (
-        <>
-        {size}
-            <Card>
+    return <Grid columns="large" gap="large" pad={{ bottom: "large" }}>
+      <Card>
             <CardHeader>
             <Heading level={2}>
                     <strong>Offensive Stats (Per Game)</strong>
@@ -337,11 +345,5 @@ export const MatchupStats = () => {
             </Table>
        </CardBody>
      </Card>
-
-        </>
-
-
-        )
-
-
-  }
+  </Grid>
+}
