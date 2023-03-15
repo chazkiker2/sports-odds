@@ -3,6 +3,7 @@
 data/
 notes.md
 src/sheets.pem
+.env
 
 # dependencies
 /node_modules
