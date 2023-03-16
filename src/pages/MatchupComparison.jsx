@@ -15,6 +15,75 @@ import {
 import teamData from "../data/all-teams.json"
 import { useParams } from "react-router-dom"
 
+function DataRow(props) {
+    const { homeTeam, awayTeam, statKey, rankKey, rowTitle } = props
+
+    return (
+        <>
+            <TableRow>
+                <TableCell scope="row" border={"all"}>
+                    <strong>{rowTitle}</strong>
+                </TableCell>
+                <TableCell scope="row" border={"all"}>
+                    {statKey(homeTeam)}
+                </TableCell>
+                <TableCell scope="row" border={"all"}>
+                    {rankKey(homeTeam)}
+                </TableCell>
+                <TableCell scope="row" border={"all"}>
+                    {statKey(awayTeam)}
+                </TableCell>
+                <TableCell scope="row" border={"all"}>
+                    {rankKey(awayTeam)}
+                </TableCell>
+            </TableRow>
+        </>
+    )
+}
+
+function TableSection(props) {
+    const { homeTeam, awayTeam, sectionTitle, disableMarginTop } = props
+    const size = React.useContext(ResponsiveContext)
+    return (
+        <>
+            <CardHeader
+                pad={
+                    size == "small" || size == "xsmall" || size == "xxsmall"
+                        ? { top: "medium" }
+                        : null
+                }
+                margin={disableMarginTop ? null : { top: "large" }}
+            >
+                <Heading level={2}>
+                    <strong>{sectionTitle}</strong>
+                </Heading>
+            </CardHeader>
+            <CardBody>
+                <Table border={true}>
+                    <TableHeader>
+                        <TableRow>
+                            <TableCell scope="col" border={"all"}></TableCell>
+                            <TableCell scope="col" border={"all"}>
+                                {homeTeam.name}
+                            </TableCell>
+                            <TableCell scope="col" border={"all"}>
+                                Rank
+                            </TableCell>
+                            <TableCell scope="col" border={"all"}>
+                                {awayTeam.name}
+                            </TableCell>
+                            <TableCell scope="col" border={"all"}>
+                                Rank
+                            </TableCell>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>{props.children}</TableBody>
+                </Table>
+            </CardBody>
+        </>
+    )
+}
+
 export function MatchupComparison() {
     let { homeTeamGuid, awayTeamGuid } = useParams()
     const size = React.useContext(ResponsiveContext)
@@ -25,588 +94,205 @@ export function MatchupComparison() {
             <Heading Level={3}>Live/Upcoming Games</Heading>
             <Grid columns="large" gap="large" pad={{ bottom: "large" }}>
                 <Card>
-                    <CardHeader>
-                        <Heading level={2}>
-                            <strong>Offensive Stats (Per Game)</strong>
-                        </Heading>
-                    </CardHeader>
-                    <CardBody>
-                        <Table border={true}>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableCell
-                                        scope="col"
-                                        border={"all"}
-                                    ></TableCell>
-                                    <TableCell scope="col" border={"all"}>
-                                        {homeTeam.name}
-                                    </TableCell>
-                                    <TableCell scope="col" border={"all"}>
-                                        Rank
-                                    </TableCell>
-                                    <TableCell scope="col" border={"all"}>
-                                        {awayTeam.name}
-                                    </TableCell>
-                                    <TableCell scope="col" border={"all"}>
-                                        Rank
-                                    </TableCell>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                <TableRow>
-                                    <TableCell scope="row" border={"all"}>
-                                        <strong>Points</strong>
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.off.pointsPerGame}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.off.rank.pointsPerGame}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.off.pointsPerGame}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.off.rank.pointsPerGame}
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell scope="row" border={"all"}>
-                                        <strong>Field Goal %</strong>
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.off.fieldGoalsPercentage}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.off.rank.fieldGoalsPercentage}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.off.fieldGoalsPercentage}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.off.rank.fieldGoalsPercentage}
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell scope="row" border={"all"}>
-                                        <strong>Three Point %</strong>
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.off.threePointsPercentage}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {
-                                            homeTeam.off.rank
-                                                .threePointsPercentage
-                                        }
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.off.threePointsPercentage}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {
-                                            awayTeam.off.rank
-                                                .threePointsPercentage
-                                        }
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell scope="row" border={"all"}>
-                                        <strong>Free Throw %</strong>
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.off.freeThrowsPercentage}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.off.rank.freeThrowsPercentage}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.off.freeThrowsPercentage}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.off.rank.freeThrowsPercentage}
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell scope="row" border={"all"}>
-                                        <strong>Rebounds</strong>
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.off.reboundsPerGame}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.off.rank.reboundsPerGame}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.off.reboundsPerGame}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.off.rank.reboundsPerGame}
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell scope="row" border={"all"}>
-                                        <strong>Turnovers</strong>
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.off.turnoversPerGame}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.off.rank.turnoversPerGame}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.off.turnoversPerGame}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.off.rank.turnoversPerGame}
-                                    </TableCell>
-                                </TableRow>
-                            </TableBody>
-                        </Table>
-                    </CardBody>
-                    <CardHeader
-                        pad={
-                            size == "small" ||
-                            size == "xsmall" ||
-                            size == "xxsmall"
-                                ? { top: "large" }
-                                : null
-                        }
-                        margin={{ top: "large" }}
+                    <TableSection
+                        homeTeam={homeTeam}
+                        awayTeam={awayTeam}
+                        sectionTitle="Offensive Stats (Per Game)"
+                        disableMarginTop
                     >
-                        <Heading
-                            level={2}
-                            pad={
-                                size == "small" ||
-                                size == "xsmall" ||
-                                size == "xxsmall"
-                                    ? { top: "large" }
-                                    : null
+                        <DataRow
+                            rowTitle="Points"
+                            awayTeam={awayTeam}
+                            homeTeam={homeTeam}
+                            statKey={(x) => x.offensiveStats.pointsPerGame}
+                            rankKey={(x) => x.rank.offense.pointsPerGame}
+                        />
+                        <DataRow
+                            rowTitle="Field Goal %"
+                            awayTeam={awayTeam}
+                            homeTeam={homeTeam}
+                            statKey={(x) =>
+                                x.offensiveStats.fieldGoalsPercentage
                             }
-                        >
-                            <strong>Defensive Stats (Per Game)</strong>
-                        </Heading>
-                    </CardHeader>
-                    <CardBody pad="none">
-                        <Table border={true}>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableCell
-                                        scope="col"
-                                        border={"all"}
-                                    ></TableCell>
-                                    <TableCell scope="col" border={"all"}>
-                                        {homeTeam.name}
-                                    </TableCell>
-                                    <TableCell scope="col" border={"all"}>
-                                        Rank
-                                    </TableCell>
-                                    <TableCell scope="col" border={"all"}>
-                                        {awayTeam.name}
-                                    </TableCell>
-                                    <TableCell scope="col" border={"all"}>
-                                        Rank
-                                    </TableCell>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                <TableRow>
-                                    <TableCell scope="row" border={"all"}>
-                                        <strong>Points Allowed</strong>
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.def.pointsPerGame}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.def.rank.pointsPerGame}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.def.pointsPerGame}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.def.rank.pointsPerGame}
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell scope="row" border={"all"}>
-                                        <strong>Field Goal %</strong>
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.def.fieldGoalsPercentage}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.def.rank.fieldGoalsPercentage}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.def.fieldGoalsPercentage}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.def.rank.fieldGoalsPercentage}
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell scope="row" border={"all"}>
-                                        <strong>3 Point %</strong>
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.def.threePointsPercentage}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {
-                                            homeTeam.def.rank
-                                                .threePointsPercentage
-                                        }
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.def.threePointsPercentage}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {
-                                            awayTeam.def.rank
-                                                .threePointsPercentage
-                                        }
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell scope="row" border={"all"}>
-                                        <strong>Fouls</strong>
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.def.personalFoulsPerGame}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.def.rank.personalFoulsPerGame}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.def.personalFoulsPerGame}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.def.rank.personalFoulsPerGame}
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell scope="row" border={"all"}>
-                                        <strong>Rebounds</strong>
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.def.reboundsPerGame}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.def.rank.reboundsPerGame}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.def.reboundsPerGame}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.def.rank.reboundsPerGame}
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell scope="row" border={"all"}>
-                                        <strong>Turnovers</strong>
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.def.turnoversPerGame}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.def.rank.turnoversPerGame}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.def.turnoversPerGame}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.def.rank.turnoversPerGame}
-                                    </TableCell>
-                                </TableRow>
-                            </TableBody>
-                        </Table>
-                    </CardBody>
+                            rankKey={(x) => x.rank.offense.fieldGoalsPercentage}
+                        />
+                        <DataRow
+                            rowTitle="Three Point %"
+                            awayTeam={awayTeam}
+                            homeTeam={homeTeam}
+                            statKey={(x) =>
+                                x.offensiveStats.threePointsPercentage
+                            }
+                            rankKey={(x) =>
+                                x.rank.offense.threePointsPercentage
+                            }
+                        />
+                        <DataRow
+                            rowTitle="Free Throw %"
+                            awayTeam={awayTeam}
+                            homeTeam={homeTeam}
+                            statKey={(x) =>
+                                x.offensiveStats.freeThrowsPercentage
+                            }
+                            rankKey={(x) => x.rank.offense.freeThrowsPercentage}
+                        />
 
-                    <CardHeader>
-                        <Heading level={2}>
-                            <strong>Against the Spread</strong>
-                        </Heading>
-                    </CardHeader>
-                    <CardBody pad="none">
-                        <Table border={true}>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableCell
-                                        scope="col"
-                                        border={"all"}
-                                    ></TableCell>
-                                    <TableCell scope="col" border={"all"}>
-                                        {homeTeam.name}
-                                    </TableCell>
-                                    <TableCell scope="col" border={"all"}>
-                                        Rank
-                                    </TableCell>
-                                    <TableCell scope="col" border={"all"}>
-                                        {awayTeam.name}
-                                    </TableCell>
-                                    <TableCell scope="col" border={"all"}>
-                                        Rank
-                                    </TableCell>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                <TableRow>
-                                    <TableCell scope="row" border={"all"}>
-                                        <strong>Record ATS</strong>
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {
-                                            homeTeam["trends-all-games"][
-                                                "ATS Record"
-                                            ]
-                                        }
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.def["#"]}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {
-                                            awayTeam["trends-all-games"][
-                                                "ATS Record"
-                                            ]
-                                        }
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.def["#"]}
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell scope="row" border={"all"}>
-                                        <strong>Favorite ATS</strong>
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {
-                                            homeTeam["trends-as-fav"][
-                                                "ATS Record"
-                                            ]
-                                        }
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.def["#"]}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {
-                                            awayTeam["trends-as-fav"][
-                                                "ATS Record"
-                                            ]
-                                        }
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.def["#"]}
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell scope="row" border={"all"}>
-                                        <strong>Home Fav ATS</strong>
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {
-                                            homeTeam["trends-as-home-fav"][
-                                                "ATS Record"
-                                            ]
-                                        }
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.def["#"]}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {
-                                            awayTeam["trends-as-home-fav"][
-                                                "ATS Record"
-                                            ]
-                                        }
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.def["#"]}
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell scope="row" border={"all"}>
-                                        <strong>Away Fav ATS</strong>
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {
-                                            homeTeam["trends-as-away-fav"][
-                                                "ATS Record"
-                                            ]
-                                        }
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.def["#"]}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {
-                                            awayTeam["trends-as-away-fav"][
-                                                "ATS Record"
-                                            ]
-                                        }
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.def["#"]}
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell scope="row" border={"all"}>
-                                        <strong>Home Underdog ATS</strong>
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam["trends-as-home-underdog"]?.[
-                                            "ATS Record"
-                                        ] ?? "N/A"}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.def["#"]}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam["trends-as-home-underdog"]?.[
-                                            "ATS Record"
-                                        ] ?? "N/A"}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.def["#"]}
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell scope="row" border={"all"}>
-                                        <strong>Away Underdog ATS</strong>
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam["trends-as-away-underdog"]?.[
-                                            "ATS Record"
-                                        ] ?? "N/A"}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.def["#"]}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam["trends-as-away-underdog"]?.[
-                                            "ATS Record"
-                                        ] ?? "N/A"}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.def["#"]}
-                                    </TableCell>
-                                </TableRow>
-                            </TableBody>
-                        </Table>
-                    </CardBody>
-                    <CardHeader
-                        pad={
-                            size == "small" ||
-                            size == "xsmall" ||
-                            size == "xxsmall"
-                                ? { top: "xlarge" }
-                                : null
-                        }
-                        margin={{ top: "xlarge" }}
+                        <DataRow
+                            rowTitle="Rebounds"
+                            awayTeam={awayTeam}
+                            homeTeam={homeTeam}
+                            statKey={(x) => x.offensiveStats.reboundsPerGame}
+                            rankKey={(x) => x.rank.offense.reboundsPerGame}
+                        />
+
+                        <DataRow
+                            rowTitle="Turnovers"
+                            awayTeam={awayTeam}
+                            homeTeam={homeTeam}
+                            statKey={(x) => x.offensiveStats.turnoversPerGame}
+                            rankKey={(x) => x.rank.offense.turnoversPerGame}
+                        />
+                    </TableSection>
+                    <TableSection
+                        homeTeam={homeTeam}
+                        awayTeam={awayTeam}
+                        sectionTitle="Defensive Stats (Per Game)"
                     >
-                        <Heading
-                            level={2}
-                            pad={
-                                size == "small" ||
-                                size == "xsmall" ||
-                                size == "xxsmall"
-                                    ? { top: "xlarge" }
-                                    : null
+                        <DataRow
+                            rowTitle="Points"
+                            awayTeam={awayTeam}
+                            homeTeam={homeTeam}
+                            statKey={(x) => x.defensiveStats.pointsPerGame}
+                            rankKey={(x) => x.rank.defense.pointsPerGame}
+                        />
+                        <DataRow
+                            rowTitle="Field Goal %"
+                            awayTeam={awayTeam}
+                            homeTeam={homeTeam}
+                            statKey={(x) =>
+                                x.defensiveStats.fieldGoalsPercentage
                             }
-                        >
-                            <strong>SOS / Last 10 / vs Top 25</strong>
-                        </Heading>
-                    </CardHeader>
-                    <CardBody pad="none">
-                        <Table border={true}>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableCell
-                                        scope="col"
-                                        border={"all"}
-                                    ></TableCell>
-                                    <TableCell scope="col" border={"all"}>
-                                        {homeTeam.name}
-                                    </TableCell>
-                                    <TableCell scope="col" border={"all"}>
-                                        Rank
-                                    </TableCell>
-                                    <TableCell scope="col" border={"all"}>
-                                        {awayTeam.name}
-                                    </TableCell>
-                                    <TableCell scope="col" border={"all"}>
-                                        Rank
-                                    </TableCell>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                <TableRow>
-                                    <TableCell scope="row" border={"all"}>
-                                        <strong>SOS Rating</strong>
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam["rank-schedule-strength"]?.[
-                                            "Rating"
-                                        ] ?? "N/A"}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.def["#"]}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam["rank-schedule-strength"]?.[
-                                            "Rating"
-                                        ] ?? "N/A"}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.def["#"]}
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell scope="row" border={"all"}>
-                                        <strong>VS Top 25</strong>
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam[
-                                            "trends-against-ranked-opp"
-                                        ]?.["Win-Loss Record"] ?? "N/A"}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.def["#"]}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam[
-                                            "trends-against-ranked-opp"
-                                        ]?.["Win-Loss Record"] ?? "N/A"}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.def["#"]}
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell scope="row" border={"all"}>
-                                        <strong>Last 10 Games</strong>
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam["rank-last-10-games"]?.[
-                                            "Rating"
-                                        ] ?? "N/A"}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {homeTeam.def["#"]}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam["rank-last-10-games"]?.[
-                                            "Rating"
-                                        ] ?? "N/A"}
-                                    </TableCell>
-                                    <TableCell scope="row" border={"all"}>
-                                        {awayTeam.def["#"]}
-                                    </TableCell>
-                                </TableRow>
-                            </TableBody>
-                        </Table>
-                    </CardBody>
+                            rankKey={(x) => x.rank.defense.fieldGoalsPercentage}
+                        />
+                        <DataRow
+                            rowTitle="Three Point %"
+                            awayTeam={awayTeam}
+                            homeTeam={homeTeam}
+                            statKey={(x) =>
+                                x.defensiveStats.threePointsPercentage
+                            }
+                            rankKey={(x) =>
+                                x.rank.defense.threePointsPercentage
+                            }
+                        />
+                        <DataRow
+                            rowTitle="Free Throw %"
+                            awayTeam={awayTeam}
+                            homeTeam={homeTeam}
+                            statKey={(x) =>
+                                x.defensiveStats.freeThrowsPercentage
+                            }
+                            rankKey={(x) => x.rank.defense.freeThrowsPercentage}
+                        />
+
+                        <DataRow
+                            rowTitle="Rebounds"
+                            awayTeam={awayTeam}
+                            homeTeam={homeTeam}
+                            statKey={(x) => x.defensiveStats.reboundsPerGame}
+                            rankKey={(x) => x.rank.defense.reboundsPerGame}
+                        />
+
+                        <DataRow
+                            rowTitle="Turnovers"
+                            awayTeam={awayTeam}
+                            homeTeam={homeTeam}
+                            statKey={(x) => x.defensiveStats.turnoversPerGame}
+                            rankKey={(x) => x.rank.defense.turnoversPerGame}
+                        />
+                    </TableSection>
+                    <TableSection
+                        homeTeam={homeTeam}
+                        awayTeam={awayTeam}
+                        sectionTitle="Against the Spread"
+                    >
+                        <DataRow
+                            rowTitle="Record ATS"
+                            awayTeam={awayTeam}
+                            homeTeam={homeTeam}
+                            statKey={(x) => x.trendsAllGames.atsRecord}
+                            rankKey={(x) => ""}
+                        />
+                        <DataRow
+                            rowTitle="Favorite ATS"
+                            awayTeam={awayTeam}
+                            homeTeam={homeTeam}
+                            statKey={(x) => x.trendsAsFav.atsRecord}
+                            rankKey={(x) => ""}
+                        />
+                        <DataRow
+                            rowTitle="Home Fav ATS"
+                            awayTeam={awayTeam}
+                            homeTeam={homeTeam}
+                            statKey={(x) => x.trendsAsHomeFav.atsRecord}
+                            rankKey={(x) => ""}
+                        />
+                        <DataRow
+                            rowTitle="Away Fav ATS"
+                            awayTeam={awayTeam}
+                            homeTeam={homeTeam}
+                            statKey={(x) => x.trendsAsAwayFav.atsRecord}
+                            rankKey={(x) => ""}
+                        />
+                        <DataRow
+                            rowTitle="Home Underdog ATS"
+                            awayTeam={awayTeam}
+                            homeTeam={homeTeam}
+                            statKey={(x) =>
+                                x.trendsAsHomeUnderdog?.atsRecord ?? "N/A"
+                            }
+                            rankKey={(x) => ""}
+                        />
+
+                        <DataRow
+                            rowTitle="Away Underdog ATS"
+                            awayTeam={awayTeam}
+                            homeTeam={homeTeam}
+                            statKey={(x) =>
+                                x.trendsAsAwayUnderdog?.atsRecord ?? "N/A"
+                            }
+                            rankKey={(x) => ""}
+                        />
+                    </TableSection>
+                    <TableSection
+                        homeTeam={homeTeam}
+                        awayTeam={awayTeam}
+                        sectionTitle="SOS / Last 10 / vs Top 25"
+                    >
+                        <DataRow
+                            rowTitle="SOS Rating"
+                            awayTeam={awayTeam}
+                            homeTeam={homeTeam}
+                            statKey={(x) => x.rankScheduleStrength.rating}
+                            rankKey={(x) => ""}
+                        />
+                        <DataRow
+                            rowTitle="VS Top 24"
+                            awayTeam={awayTeam}
+                            homeTeam={homeTeam}
+                            statKey={(x) =>
+                                x.trendsAgainstRankedOpp?.winLossRecord ?? "N/A"
+                            }
+                            rankKey={(x) => ""}
+                        />
+                        <DataRow
+                            rowTitle="Last 10 Rating"
+                            awayTeam={awayTeam}
+                            homeTeam={homeTeam}
+                            statKey={(x) => x.rankLast10Games.rating}
+                            rankKey={(x) => ""}
+                        />
+                    </TableSection>
                 </Card>
             </Grid>
         </>

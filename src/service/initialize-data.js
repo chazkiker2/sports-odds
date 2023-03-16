@@ -16,6 +16,19 @@ const colMap = {
     5: "E",
     6: "F",
 }
+const sheetNameMap = {
+    off: "offensiveStats",
+    def: "defensiveStats",
+    "trends-all-games": "trendsAllGames",
+    "trends-as-fav": "trendsAsFav",
+    "trends-as-away-underdog": "trendsAsAwayUnderdog",
+    "trends-as-home-underdog": "trendsAsHomeUnderdog",
+    "trends-as-away-fav": "trendsAsAwayFav",
+    "trends-as-home-fav": "trendsAsHomeFav",
+    "trends-against-ranked-opp": "trendsAgainstRankedOpp",
+    "rank-last-10-games": "rankLast10Games",
+    "rank-schedule-strength": "rankScheduleStrength",
+}
 
 async function buildData() {
     const sheetsInfo = await sheets.getSheets(documentId)
@@ -38,8 +51,8 @@ async function buildData() {
     const allTeams = {}
 
     sheetData.forEach((sheet) => {
-        const metadata = sheet.metadata
-        const data = sheet.data
+        const { metadata, data } = sheet
+        const sheetName = metadata.title
 
         if (data == undefined) {
             return
@@ -50,13 +63,12 @@ async function buildData() {
 
         const headersMap = {}
         const entries = []
+
         headersRow.map((x) => {
             let content = x.content
             if (content == "3:00 PM") {
                 content = "3PM"
             }
-            // const columnCC = convertStringToCamelCase(content)
-            // headersMap[x.column] = columnCC.toLowerCase();
             headersMap[x.column] = content
         })
 
@@ -68,13 +80,8 @@ async function buildData() {
                 entryObj = { ...originalData }
             })
 
-            if (
-                sheet.metadata.title == "off" ||
-                sheet.metadata.title == "def"
-            ) {
+            if (sheetName == "off" || sheetName == "def") {
                 entryObj = {
-                    originalData,
-                    Team: originalData["Team"],
                     team: originalData["Team"],
                     gamesPlayed: parseFloat(originalData["GP"]),
                     minutesPlayedPerGame: parseFloat(originalData["MPG"]),
@@ -96,20 +103,54 @@ async function buildData() {
                     turnoversPerGame: parseFloat(originalData["TOV"]),
                     personalFoulsPerGame: parseFloat(originalData["PF"]),
                 }
+            } else if (
+                sheetName == "trends-all-games" ||
+                sheetName == "trends-as-fav" ||
+                sheetName == "trends-as-away-underdog" ||
+                sheetName == "trends-as-home-underdog" ||
+                sheetName == "trends-as-home-fav" ||
+                sheetName == "trends-as-away-fav"
+            ) {
+                entryObj = {
+                    team: originalData["Team"],
+                    atsRecord: originalData["ATS Record"],
+                    coverPercentage: originalData["Cover %"],
+                    mov: originalData["MOV"],
+                    atsPlusMinus: originalData["ATS +/-"],
+                }
+            } else if (
+                sheetName == "rank-schedule-strength" ||
+                sheetName == "rank-last-10-games"
+            ) {
+                entryObj = {
+                    rank: originalData["Rank"],
+                    team: originalData["Team"],
+                    rating: originalData["Rating"],
+                    hi: originalData["Hi"],
+                    low: originalData["Low"],
+                    last: originalData["Last"],
+                }
+            } else if (sheetName == "trends-against-ranked-opp") {
+                entryObj = {
+                    team: originalData["Team"],
+                    winLossRecord: originalData["Win-Loss Record"],
+                    winPercentage: originalData["Win %"],
+                    mov: originalData["MOV"],
+                    atsPlusMinus: originalData["ATS +/-"],
+                }
             }
 
             entries.push(entryObj)
-            console.log(entryObj)
-            console.log(originalData)
-            let teamName = entryObj["Team"]
+
+            let teamName = entryObj.team
             teamName = utils.normalizeTeamName(teamName)
             if (!(teamName in allTeams)) {
                 allTeams[teamName] = {}
             }
-            allTeams[teamName][metadata.title] = entryObj
+            allTeams[teamName][sheetNameMap[sheetName]] = entryObj
         })
 
-        if (sheet.metadata.title == "off" || sheet.metadata.title == "def") {
+        if (sheetName == "off" || sheetName == "def") {
             const offSorted = {
                 pointsPerGame: [...entries],
                 fieldGoalsPercentage: [...entries],
@@ -119,31 +160,48 @@ async function buildData() {
                 threePointsPercentage: [...entries],
                 personalFoulsPerGame: [...entries],
             }
-            offSorted.pointsPerGame.sort(
-                (a, b) => b.pointsPerGame - a.pointsPerGame
+            offSorted.pointsPerGame.sort((a, b) =>
+                sheetName == "def"
+                    ? a.pointsPerGame - b.pointsPerGame
+                    : b.pointsPerGame - a.pointsPerGame
             )
-            offSorted.fieldGoalsPercentage.sort(
-                (a, b) => b.fieldGoalsPercentage - a.fieldGoalsPercentage
+            offSorted.fieldGoalsPercentage.sort((a, b) =>
+                sheetName == "def"
+                    ? a.fieldGoalsPercentage - b.fieldGoalsPercentage
+                    : b.fieldGoalsPercentage - a.fieldGoalsPercentage
             )
-            offSorted.freeThrowsPercentage.sort(
-                (a, b) => b.freeThrowsPercentage - a.freeThrowsPercentage
+            offSorted.freeThrowsPercentage.sort((a, b) =>
+                sheetName == "def"
+                    ? a.freeThrowsPercentage - b.freeThrowsPercentage
+                    : b.freeThrowsPercentage - a.freeThrowsPercentage
             )
-            offSorted.reboundsPerGame.sort(
-                (a, b) => b.reboundsPerGame - a.reboundsPerGame
+            offSorted.reboundsPerGame.sort((a, b) =>
+                sheetName == "def"
+                    ? a.reboundsPerGame - b.reboundsPerGame
+                    : b.reboundsPerGame - a.reboundsPerGame
             )
-            offSorted.turnoversPerGame.sort(
-                (a, b) => b.turnoversPerGame - a.turnoversPerGame
+            offSorted.threePointsPercentage.sort((a, b) =>
+                sheetName == "def"
+                    ? a.threePointsPercentage - b.threePointsPercentage
+                    : b.threePointsPercentage - a.threePointsPercentage
             )
-            offSorted.threePointsPercentage.sort(
-                (a, b) => b.threePointsPercentage - a.threePointsPercentage
+            offSorted.turnoversPerGame.sort((a, b) =>
+                sheetName == "def"
+                    ? b.turnoversPerGame - a.turnoversPerGame
+                    : a.turnoversPerGame - b.turnoversPerGame
             )
-            offSorted.personalFoulsPerGame.sort(
-                (a, b) => b.personalFoulsPerGame - a.personalFoulsPerGame
+            offSorted.personalFoulsPerGame.sort((a, b) =>
+                sheetName == "def"
+                    ? b.personalFoulsPerGame - a.personalFoulsPerGame
+                    : a.personalFoulsPerGame - b.personalFoulsPerGame
             )
 
             for (const teamName in allTeams) {
-                const key = sheet.metadata.title
-                allTeams[teamName][key].rank = {
+                const key = sheetNameMap[sheetName]
+                allTeams[teamName].rank ??= {}
+                allTeams[teamName].rank[
+                    sheetName === "def" ? "defense" : "offense"
+                ] = {
                     pointsPerGame:
                         offSorted.pointsPerGame.findIndex(
                             (x) => x.team === allTeams[teamName][key].team
@@ -174,6 +232,44 @@ async function buildData() {
                         ) + 1,
                 }
             }
+        } else if (sheetName === "trends-against-ranked-opp") {
+            const sorted = [...entries]
+            sorted.sort((a, b) => b.winLossRecord - a.winLossRecord)
+
+            for (const teamName in allTeams) {
+                const key = sheetNameMap[sheetName]
+                const relevantTeam = allTeams[teamName][key]?.team
+                if (relevantTeam != undefined) {
+                    allTeams[teamName].rank ??= {}
+                    allTeams[teamName].rank.sosRating =
+                        sorted.findIndex((x) => x.team === relevantTeam) + 1
+                }
+            }
+        } else if (sheetName === "rank-last-10-games") {
+            const sorted = [...entries]
+            sorted.sort((a, b) => b.rating - a.rating)
+            for (const teamName in allTeams) {
+                const key = sheetNameMap[sheetName]
+                const relevantTeam = allTeams[teamName][key]?.team
+                if (relevantTeam != undefined) {
+                    allTeams[teamName].rank ??= {}
+                    allTeams[teamName].rank.sosRating =
+                        sorted.findIndex((x) => x.team === relevantTeam) + 1
+                }
+            }
+        } else if (sheetName === "rank-schedule-strength") {
+            const sorted = [...entries]
+            sorted.sort((a, b) => b.rating - a.rating)
+            for (const teamName in allTeams) {
+                const key = sheetNameMap[sheetName]
+                console.log(key)
+                const relevantTeam = allTeams[teamName][key]?.team
+                if (relevantTeam != undefined) {
+                    allTeams[teamName].rank ??= {}
+                    allTeams[teamName].rank.sosRating =
+                        sorted.findIndex((x) => x.team === relevantTeam) + 1
+                }
+            }
         }
     })
 
@@ -188,7 +284,7 @@ async function buildData() {
         nameMap[k] = guid
     }
     fs.writeFile(
-        `src/data/all-teams.json`,
+        `src/data/all-teams-v2.json`,
         JSON.stringify(teams),
         "utf8",
         (x) => {}
@@ -200,6 +296,7 @@ async function buildData() {
         (x) => {}
     )
 }
+
 buildData().then(console.log).catch(console.error)
 
 /*
